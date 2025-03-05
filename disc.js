@@ -34,7 +34,7 @@ let availableColors = [
   "#808080",
 ];
 import shuffle from "./utils.js";
-shuffle(availableColors);
+
 export default class Disc {
   constructor(color) {
     this.color = color;
@@ -55,6 +55,10 @@ export default class Disc {
 
   fromString(str) {
     this.color = str;
+  }
+
+  static shuffleColors() {
+    shuffle(availableColors);
   }
 
   static matches(disc1, disc2) {

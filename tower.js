@@ -134,8 +134,9 @@ export default class Tower {
     }
   }
   fromString(str) {
+    this.el.removeEventListener("click", this.clickHandler);
     this.removeAllDiscs();
-
+    this.el.addEventListener("click", this.clickHandler);
     this.el.classList.remove("done");
     if (str === "") {
       return;

@@ -59,3 +59,14 @@ div.disc {
 div.disc.selected {
     border: 1px solid red;
 }
+
+
+div.hand {
+
+    margin-bottom: 10px;
+}
+
+div.hand.disc {
+    width: 80%;
+
+}
