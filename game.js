@@ -2,6 +2,7 @@
     todo:
         add a move counter
         indication of tower height
+        dark mode
 
 */
 import Tower from "./tower.js";
@@ -43,6 +44,11 @@ export default class Game {
     }
     return done;
   }
+  restart() {
+    let state = this.history[0];
+    this.history = [state, state]; // todo fix this;
+    this.fromString(state);
+  }
   undo() {
     console.log("undo");
 
@@ -74,7 +80,7 @@ export default class Game {
     }
 
     // set up the css grid
-    let gridTemplateColumns = new Array(this.numTowers).fill("1fr").join(" ");
+    let gridTemplateColumns = "1fr 1fr 1fr 1fr"; // new Array(this.numTowers).fill("1fr").join(" ");
     this.el.style.gridTemplateColumns = gridTemplateColumns;
 
     // make the disks
@@ -96,6 +102,12 @@ export default class Game {
           tower.addDisc(disc, true);
         }
       }
+    });
+
+    // get the heigth of the 1st tower and use it to set the height of the other towers
+    let height = this.towers[0].el.offsetHeight;
+    this.towers.map((tower) => {
+      tower.el.style.height = parseInt(height * 1.1) + "px";
     });
     // clear out the undo history
     this.history = [];

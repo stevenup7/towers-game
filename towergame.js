@@ -10,6 +10,10 @@ function startgame() {
   game.start(numTowers, numDisks, numSpaces);
 }
 
+document.getElementById("restart").addEventListener("click", () => {
+  game.restart();
+});
+
 document.getElementById("start").addEventListener("click", () => {
   startgame();
 });

@@ -28,7 +28,7 @@ export default class Hand {
     this.discs.map((disc) => {
       if (destTower.isValidMove(disc)) {
         console.log("click");
-        audio.play();
+        // audio.play();
         destTower.addDisc(disc, false);
       } else {
         this.srcTower.addDisc(disc, true);
