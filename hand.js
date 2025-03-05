@@ -1,3 +1,5 @@
+// the hand class represents the pieces that the player is currently holding
+
 export default class Hand {
   constructor() {
     this.discs = [];
@@ -14,9 +16,9 @@ export default class Hand {
   place(destTower) {
     this.discs.map((disc) => {
       if (destTower.isValidMove(disc)) {
-        destTower.addDisc(disc);
+        destTower.addDisc(disc, false);
       } else {
-        this.srcTower.addDisc(disc);
+        this.srcTower.addDisc(disc, true);
       }
     }, this);
     this.isEmpty = true;

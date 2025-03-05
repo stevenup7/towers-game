@@ -1,34 +1,36 @@
-console.log("tower.js loaded");
+// represents a single tower
 
 import Disc from "./disc.js";
 
 export default class Tower {
   constructor(game, numDisks) {
-    console.log("Tower constructor");
-    this.game = game;
-    this.numDisks = numDisks;
+    this.game = game; // refrence to the game runner
+    this.numDisks = numDisks; // how many disks fit on the tower
     this.discs = [];
+    // click handler - reference is used to have a clean way to remove the event listener
     this.clickHandler = this.towerClick.bind(this);
+    // make the html element
     this.makeEl();
   }
 
-  makeEl() {
-    if (typeof this.el === "undefined") {
-      this.el = document.createElement("div");
-      this.el.classList.add("tower");
-      this.game.el.appendChild(this.el);
-      this.el.addEventListener("click", this.clickHandler);
+  towerClick() {
+    if (this.game.hand.isEmpty) {
+      this.game.hand.pickup(this);
+    } else {
+      this.game.hand.place(this);
+      this.game.checkDone();
     }
   }
 
+  // is hte tower full of discs
   isFull() {
     return this.discs.length == this.numDisks;
   }
   isDone() {
-    if (this.discs.length == this.numDisks) {
-      let color = this.discs[0].color;
+    if (this.isFull()) {
+      let firstDisc = this.discs[0];
       for (let i = 1; i < this.discs.length; i++) {
-        if (this.discs[i].color != color) {
+        if (!Disc.matches(this.discs[i], firstDisc)) {
           return false;
         }
       }
@@ -48,14 +50,16 @@ export default class Tower {
     if (this.isFull()) {
       return false;
     }
+    /// make sure the new disc is the same color as the top disc
     let topDisc = this.discs.at(-1);
-    console.log("topDisc", topDisc.color, newDisc.color);
+
     if (Disc.matches(topDisc, newDisc)) {
       return true;
     }
     return false;
   }
 
+  // returns an array of discs that are on the top of the tower and of the same color
   getTopDiscs() {
     if (this.length === 0) {
       return [];
@@ -76,56 +80,70 @@ export default class Tower {
   }
 
   addDiscElement(discEl) {
-    this.el.appendChild(discEl);
+    if (this.discs.length > 0) {
+      this.el.insertBefore(discEl, this.el.firstChild);
+    } else {
+      this.el.appendChild(discEl);
+    }
+  }
+  // add discs to the tower
+  // params: disc - the disc to add
+  //        forcePlace - if true dont check if the move is valid (shuffled start of the game)
+  addDisc(disc, forcePlace) {
+    if (this.isFull()) {
+      return false;
+    }
+    if (!forcePlace && !this.isValidMove(disc)) {
+      return false;
+    }
+
+    this.addDiscElement(disc.el);
+    this.discs.push(disc);
+
+    if (!forcePlace) {
+      if (this.isDone()) {
+        this.el.classList.add("done");
+        // remove the event listener
+
+        this.el.removeEventListener("click", this.clickHandler);
+      }
+    }
+    return true;
+  }
+
+  makeEl() {
+    if (typeof this.el === "undefined") {
+      this.el = document.createElement("div");
+      this.el.classList.add("tower");
+      this.game.el.appendChild(this.el);
+      this.el.addEventListener("click", this.clickHandler);
+    }
+  }
+
+  toString() {
+    return this.discs.map((disc) => disc.toString()).join(",");
   }
 
   removeDisc() {
     this.el.firstChild.remove();
     return this.discs.pop();
   }
-
-  // add discs to the tower
-  // params: disc - the disc to add
-  //        checkIsValidMove - if true, then check if the move is valid
-  //                         - if not then just add the discs (start of game)
-  addDisc(disc, checkIsValidMove) {
-    if (this.isFull()) {
-      return false;
+  removeAllDiscs() {
+    while (this.discs.length > 0) {
+      this.removeDisc();
     }
-    if (checkIsValidMove && !this.isValidMove(disc)) {
-      return false;
-    }
-
-    if (this.discs.length > 0) {
-      this.el.insertBefore(disc.el, this.el.firstChild);
-    } else {
-      this.el.appendChild(disc.el);
-    }
-    this.discs.push(disc);
-    console.log("disc add", checkIsValidMove);
-
-    if (!checkIsValidMove) {
-      if (this.isDone()) {
-        this.el.classList.add("done");
-        // remove the event listener
-        console.log("removing event listener");
-        this.el.removeEventListener("click", this.clickHandler);
-
-        this.game.checkDone();
-      }
-    }
-    return true;
   }
-  towerClick() {
-    if (this.game.hand.isEmpty) {
-      // pick up the top disc(s)
-      console.log("picking up");
+  fromString(str) {
+    this.removeAllDiscs();
 
-      this.game.hand.pickup(this);
-    } else {
-      console.log("placing");
-
-      this.game.hand.place(this);
+    this.el.classList.remove("done");
+    if (str === "") {
+      return;
     }
+    let discsStrings = str.split(",");
+    discsStrings.map((discsString) => {
+      let disc = new Disc(discsString);
+      this.addDisc(disc, true);
+    });
   }
 }

@@ -9,8 +9,16 @@ function startGame() {
   game.start(numTowers, numDisks, numSpaces);
 }
 
+function undo() {
+  game.undo();
+}
+
 document.getElementById("start").addEventListener("click", () => {
   startGame();
+});
+
+document.getElementById("undo").addEventListener("click", () => {
+  undo();
 });
 
 startGame();

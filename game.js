@@ -1,23 +1,9 @@
 /*
     todo:
         add a move counter
-        indication of tower height 
-        
+        indication of tower height
+
 */
-
-const availableColors = [
-  "#1f77b4",
-  "#ff7f0e",
-  "#2ca02c",
-  "#d62728",
-  "#9467bd",
-  "#8c564b",
-  "#e377c2",
-  "#7f7f7f",
-  "#bcbd22",
-  "#17becf",
-];
-
 import Tower from "./tower.js";
 import shuffle from "./utils.js";
 import Disc from "./disc.js";
@@ -29,7 +15,6 @@ export default class Game {
   }
 
   start(numTowers, numDisks, emptyTowers = 2) {
-    console.log("Game started");
     this.el = document.getElementById("game-body");
     this.towers = [];
     this.emptyTowers = emptyTowers;
@@ -37,8 +22,8 @@ export default class Game {
     this.numColors = numTowers;
     this.numTowers = numTowers + this.emptyTowers;
     this.numDisks = numDisks;
-
-    this.colors = availableColors.slice(0, this.numColors);
+    this.history = [];
+    this.wasLastMoveUndo = false;
     this.initTowers();
   }
   checkDone() {
@@ -52,8 +37,29 @@ export default class Game {
       setTimeout(() => {
         alert("you are a winner");
       }, 200);
+    } else {
+      this.history.push(this.toString());
+      this.wasLastMoveUndo = false;
     }
     return done;
+  }
+  undo() {
+    console.log("undo");
+
+    if (this.history.length > 0) {
+      console.log("undoing history length", this.history.length);
+      if (!this.wasLastMoveUndo) {
+        this.history.pop();
+      }
+      // use the starting state or if there is a history use the last in the list
+      let lastState = this.history[0];
+      if (this.history.length > 1) {
+        lastState = this.history.pop();
+      }
+
+      this.fromString(lastState);
+    }
+    this.wasLastMoveUndo = true;
   }
   initTowers() {
     this.clearEventListeners();
@@ -73,9 +79,9 @@ export default class Game {
 
     // make the disks
     let disks = [];
-    for (let i = 0; i < this.numColors; i++) {
-      for (let j = 0; j < this.numDisks; j++) {
-        let disc = new Disc(this.colors[i]);
+    for (let color = 0; color < this.numColors; color++) {
+      for (let i = 0; i < this.numDisks; i++) {
+        let disc = new Disc(color);
         disks.push(disc);
       }
     }
@@ -87,14 +93,36 @@ export default class Game {
       for (let j = 0; j < this.numDisks; j++) {
         if (disks.length > 0) {
           let disc = disks.pop();
-          tower.addDisc(disc, false);
+          tower.addDisc(disc, true);
         }
       }
     });
+    // clear out the undo history
+    this.history = [];
+    // then push the current state to the history
+    this.checkDone();
   }
   clearEventListeners() {
     this.towers.map((tower) => {
       tower.el.removeEventListener("click", tower.towerClick);
+    });
+  }
+  toString() {
+    let str = "";
+    this.towers.map((tower) => {
+      str += tower.toString() + "\n";
+    });
+    return str;
+  }
+
+  fromString(str) {
+    let towerStrings = str.split("\n");
+    console.log("loading from string", towerStrings);
+
+    this.towers.map((tower, i) => {
+      console.log("loading tower", i, towerStrings[i]);
+
+      tower.fromString(towerStrings[i]);
     });
   }
 }
