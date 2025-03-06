@@ -21,15 +21,19 @@ body {
 #settings select {
     width: 5em;
     font-size: large;
+    margin-bottom: .5em;
 }
 
 #settings button {
     margin-top: 1em;
     padding: 0.5em 1em;
+    border: 1px solid gray;
+    border-radius: 2px;
 }
 
 div.tower.done {
-    border-bottom: 10px solid green;
+    border-bottom: 10px solid rgb(128, 0, 100);
+    opacity: .5;
 }
 
 div.tower {
@@ -78,6 +82,16 @@ div.hand.disc {
 body.dark-mode {
     background-color: #222;
     color: white;
+}
+
+body.dark-mode button,
+body.dark-mode select {
+    background-color: #222;
+    color: #ddd;
+}
+
+body.dark-mode label {
+    color: #ddd;
 }
 
 body.dark-mode div.tower:hover {
