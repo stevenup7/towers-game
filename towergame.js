@@ -10,6 +10,13 @@ function startgame() {
   game.start(numTowers, numDisks, numSpaces);
 }
 
+document.getElementById("darkmode").addEventListener("click", () => {
+  document.body.classList.add("dark-mode");
+});
+document.getElementById("lightmode").addEventListener("click", () => {
+  document.body.classList.remove("dark-mode");
+});
+
 document.getElementById("restart").addEventListener("click", () => {
   game.restart();
 });

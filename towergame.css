@@ -74,3 +74,12 @@ div.hand.disc {
     width: 80%;
     border: 1px solid black;
 }
+
+body.dark-mode {
+    background-color: #222;
+    color: white;
+}
+
+body.dark-mode div.tower:hover {
+    background-color: #333;
+}
