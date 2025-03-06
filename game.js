@@ -122,13 +122,25 @@ export default class Game {
 
   // save the game state to local storage
   save() {
-    localStorage.setItem("game", this.toString());
+    // add the config to the save
+    let storageData = {
+      numTowers: this.numTowers - this.emptyTowers,
+      numDisks: this.numDisks,
+      emptyTowers: this.emptyTowers,
+      history: this.history,
+    };
+    localStorage.setItem("game", JSON.stringify(storageData));
   }
   // load the game state from local storage
   load() {
     let state = localStorage.getItem("game");
+
     if (state) {
-      this.fromString(state);
+      state = JSON.parse(state);
+      this.start(state.numTowers, state.numDisks, state.emptyTowers);
+      this.history = state.history;
+      debugger;
+      this.fromString(this.history.at(-1));
     }
   }
   toString() {
