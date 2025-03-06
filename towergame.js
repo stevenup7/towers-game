@@ -29,4 +29,11 @@ document.getElementById("undo").addEventListener("click", () => {
   game.undo();
 });
 
+document.getElementById("save").addEventListener("click", () => {
+  game.save();
+});
+document.getElementById("load").addEventListener("click", () => {
+  game.load();
+});
+
 startgame();

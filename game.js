@@ -119,6 +119,18 @@ export default class Game {
       tower.el.removeEventListener("click", tower.towerClick);
     });
   }
+
+  // save the game state to local storage
+  save() {
+    localStorage.setItem("game", this.toString());
+  }
+  // load the game state from local storage
+  load() {
+    let state = localStorage.getItem("game");
+    if (state) {
+      this.fromString(state);
+    }
+  }
   toString() {
     let str = "";
     this.towers.map((tower) => {
