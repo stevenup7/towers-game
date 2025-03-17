@@ -80,8 +80,8 @@ export default class Game {
     }
 
     // set up the css grid
-    let gridTemplateColumns = "1fr 1fr 1fr 1fr"; // new Array(this.numTowers).fill("1fr").join(" ");
-    this.el.style.gridTemplateColumns = gridTemplateColumns;
+    // let gridTemplateColumns = "1fr 1fr 1fr 1fr"; // new Array(this.numTowers).fill("1fr").join(" ");
+    // this.el.style.gridTemplateColumns = gridTemplateColumns;
 
     // make the disks
     let disks = [];
